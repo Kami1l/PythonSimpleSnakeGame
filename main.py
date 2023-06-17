@@ -20,7 +20,8 @@ Player = {
     "player_y":0,
     "player_width":25,
     "player_height":25,
-    "player_parts":3,
+    "player_parts":[],
+    "Length":0,
     "player_move_speed":15,
     "actualyMove":0
 }
@@ -50,18 +51,26 @@ def main():
 
         screen.fill(Config["BACKGROUND_COLOR"])
         player = pygame.draw.rect(screen,Colors["white"],(Player["player_x"],Player["player_y"],Player["player_width"],Player["player_height"]))
-        key = pygame.key.get_pressed()
-
-        # Food spawning and eating food
-
         food = pygame.draw.rect(screen,Food["food_color"],(Food['food_x'],Food['food_y'],Food['food_width'],Food['food_height']))
-        if Food["food_amount"] == 0:
-            randomFoodLocation()
-            Food["food_amount"] += 1
+        pygame.key.get_pressed()
 
+        for player_parts in Player['player_parts']:
+            pygame.draw.rect(screen,Colors["white"],(player_parts[0],player_parts[1],Player["player_width"],Player["player_height"]))
+
+        # Food random location and eating food
+        
         eating = player.colliderect(food)
+
         if eating == True:
-            Food["food_amount"] -=1
+            Player["Length"]+=1
+            Player["player_parts"].append([Food["food_x"],Food["food_y"]])
+            randomFoodLocation()
+
+        # Tail grow
+
+        Player["player_parts"].append([Player['player_x'],Player['player_y']])
+        if len(Player["player_parts"]) > Player["Length"]:
+            del Player["player_parts"][0]
 
         # Player move and quit the game
 
@@ -92,6 +101,9 @@ def main():
         # Lose condition
 
         if Player["player_x"] < 0 or Player["player_x"] > Config["SCREEN_WIDTH"] or Player["player_y"] < 0 or Player["player_y"] > Config["SCREEN_HEIGHT"]:
+            break
+
+        if [Player["player_x"],Player["player_y"]] in Player["player_parts"]:
             break
 
         clock.tick(20)
