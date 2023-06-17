@@ -5,43 +5,45 @@ pygame.init()
 
 Colors = {
     "black":(0,0,0),
-    "white":(255,255,255),
+    "green":(0,255,0),
     "red":(255,0,0)
 }
 
 Config = {
     "SCREEN_WIDTH":800,
-    "SCREEN_HEIGHT":800,
+    "SCREEN_HEIGHT":600,
     "BACKGROUND_COLOR":Colors["black"],
+    "RECT_SIZE":10,
+    "GAME_SPEED": 20
 }
 
 Player = {
-    "player_x":0,
-    "player_y":0,
-    "player_width":25,
-    "player_height":25,
+    "player_x":Config["SCREEN_WIDTH"]/2,
+    "player_y":Config["SCREEN_HEIGHT"]/2,
+    "player_width":Config["RECT_SIZE"],
+    "player_height":Config["RECT_SIZE"],
     "player_parts":[],
     "Length":0,
-    "player_move_speed":15,
+    "player_move_speed":Config["RECT_SIZE"],
     "actualyMove":0
 }
 
 Food = {
-    "food_x":100,
-    "food_y":100,
-    "food_width":10,
-    "food_height":10,
+    "food_x":0,
+    "food_y":0,
+    "food_width":Config["RECT_SIZE"],
+    "food_height":Config["RECT_SIZE"],
     "food_color":Colors["red"],
-    "food_amount":0
 }
 
 screen = pygame.display.set_mode((Config["SCREEN_WIDTH"], Config["SCREEN_HEIGHT"]))
 clock = pygame.time.Clock()
 
 def randomFoodLocation():
-    Food["food_x"] = round(random.randrange(20, Config["SCREEN_WIDTH"]-20))
-    Food['food_y'] = round(random.randrange(20, Config["SCREEN_HEIGHT"]-20))
+    Food["food_x"] = round(random.randrange(0, Config["SCREEN_WIDTH"]-Config["RECT_SIZE"]),-1)
+    Food['food_y'] = round(random.randrange(0, Config["SCREEN_HEIGHT"]-Config["RECT_SIZE"]),-1)
 
+randomFoodLocation()
 
 def main():
     run = True
@@ -50,14 +52,12 @@ def main():
         # Draw the player,fill the screen,initialize the key
 
         screen.fill(Config["BACKGROUND_COLOR"])
-        player = pygame.draw.rect(screen,Colors["white"],(Player["player_x"],Player["player_y"],Player["player_width"],Player["player_height"]))
+        player = pygame.draw.rect(screen,Colors["green"],(Player["player_x"],Player["player_y"],Player["player_width"],Player["player_height"]))
         food = pygame.draw.rect(screen,Food["food_color"],(Food['food_x'],Food['food_y'],Food['food_width'],Food['food_height']))
         pygame.key.get_pressed()
+        print(Food["food_x"],Food['food_y'],Player["player_x"],Player["player_y"])
 
-        for player_parts in Player['player_parts']:
-            pygame.draw.rect(screen,Colors["white"],(player_parts[0],player_parts[1],Player["player_width"],Player["player_height"]))
-
-        # Food random location and eating food
+        # Food random location and eatiwng food
         
         eating = player.colliderect(food)
 
@@ -67,6 +67,9 @@ def main():
             randomFoodLocation()
 
         # Tail grow
+
+        for player_parts in Player['player_parts']:
+            pygame.draw.rect(screen,Colors["green"],(player_parts[0],player_parts[1],Player["player_width"],Player["player_height"]))
 
         Player["player_parts"].append([Player['player_x'],Player['player_y']])
         if len(Player["player_parts"]) > Player["Length"]:
@@ -106,7 +109,7 @@ def main():
         if [Player["player_x"],Player["player_y"]] in Player["player_parts"]:
             break
 
-        clock.tick(20)
+        clock.tick(Config["GAME_SPEED"])
         pygame.display.update()
 
     pygame.quit()
