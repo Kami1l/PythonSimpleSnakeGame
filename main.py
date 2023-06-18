@@ -1,6 +1,4 @@
-import pygame
-import random
-import sys
+import pygame,random,sys
 
 pygame.init()
 
@@ -45,8 +43,6 @@ def randomFoodLocation():
     Food['food_y'] = round(random.randrange(0, Config["SCREEN_HEIGHT"]-Config["RECT_SIZE"]),-1)
 
 randomFoodLocation()
-
-    
 
 def NewGame():
     Player["player_x"] = Config["SCREEN_WIDTH"]/2
